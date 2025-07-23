@@ -34,10 +34,29 @@ jobs:
         run: npm test
         env:
           MONGODB_URI: mongodb://localhost:27017/test-db
+  
+
+  sast:
+    runs-on: ubuntu-latest
+    needs: test
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Use Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '18'
+
+      - name: Install ESLint
+        run: npm install eslint --save-dev
+
+      - name: Run ESLint (SAST)
+        run: npx eslint src/**/*.ts
+
 
   build:
     runs-on: ubuntu-latest
-    needs: test
+    needs: sast
     steps:
       - uses: actions/checkout@v3
 
